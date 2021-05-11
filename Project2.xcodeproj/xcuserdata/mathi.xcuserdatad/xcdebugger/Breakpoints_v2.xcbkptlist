@@ -3,4 +3,54 @@
    uuid = "7BFD01C7-B5BF-46BA-BCE2-E83FD056BF36"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F6A2087B-933F-40B4-B5F1-3DD68FFE62F0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Project2/ViewControllers/MainViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "viewDidLoad()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F6A2087B-933F-40B4-B5F1-3DD68FFE62F0 - cec67201c30464a9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Project2.AdministrationResponseDB, Swift.Error&gt;) -&gt; () in closure #1 () -&gt; () in Project2.MainViewController.viewDidLoad() -&gt; ()"
+                  moduleName = "Project2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mathi/Documents/code/Project2/Project2/ViewControllers/MainViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "1435">
+               </Location>
+               <Location
+                  uuid = "F6A2087B-933F-40B4-B5F1-3DD68FFE62F0 - a7c54f9ddd7891c3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in closure #1 (Swift.Result&lt;Project2.AdministrationResponseDB, Swift.Error&gt;) -&gt; () in closure #1 () -&gt; () in Project2.MainViewController.viewDidLoad() -&gt; ()"
+                  moduleName = "Project2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mathi/Documents/code/Project2/Project2/ViewControllers/MainViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "93">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
