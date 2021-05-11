@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4323BBC0264A805900D599F6 /* AdministrationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBBF264A805900D599F6 /* AdministrationModel.swift */; };
+		4323BBC3264A81F600D599F6 /* RecordDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBC2264A81F600D599F6 /* RecordDBHelper.swift */; };
 		435066D22646D58400D1AB9E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066D12646D58400D1AB9E /* AppDelegate.swift */; };
 		435066D42646D58400D1AB9E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066D32646D58400D1AB9E /* SceneDelegate.swift */; };
 		435066D62646D58400D1AB9E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066D52646D58400D1AB9E /* ViewController.swift */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4323BBBF264A805900D599F6 /* AdministrationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdministrationModel.swift; sourceTree = "<group>"; };
+		4323BBC2264A81F600D599F6 /* RecordDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDBHelper.swift; sourceTree = "<group>"; };
 		435066CE2646D58400D1AB9E /* Project2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		435066D12646D58400D1AB9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		435066D32646D58400D1AB9E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +82,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4323BBBE264A800400D599F6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4323BBBF264A805900D599F6 /* AdministrationModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		4323BBC1264A819100D599F6 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4323BBC2264A81F600D599F6 /* RecordDBHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		435066C52646D58400D1AB9E = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +121,8 @@
 		435066D02646D58400D1AB9E /* Project2 */ = {
 			isa = PBXGroup;
 			children = (
+				4323BBC1264A819100D599F6 /* Helpers */,
+				4323BBBE264A800400D599F6 /* Models */,
 				435067052646D5F700D1AB9E /* ViewControllers */,
 				435067042646D5C300D1AB9E /* Resources */,
 			);
@@ -277,9 +299,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4323BBC0264A805900D599F6 /* AdministrationModel.swift in Sources */,
 				435066D62646D58400D1AB9E /* ViewController.swift in Sources */,
 				435066D22646D58400D1AB9E /* AppDelegate.swift in Sources */,
 				435066DC2646D58400D1AB9E /* Project2.xcdatamodeld in Sources */,
+				4323BBC3264A81F600D599F6 /* RecordDBHelper.swift in Sources */,
 				435066D42646D58400D1AB9E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
