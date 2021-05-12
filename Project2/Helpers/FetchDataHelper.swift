@@ -1,5 +1,5 @@
 //
-//  RecordDBHelper.swift
+//  FetchDataHelper.swift
 //  Project2
 //
 //  Created by mathieu on 11/05/2021.
@@ -7,9 +7,10 @@
 
 import Foundation
 
-struct RecordDBHelper {
+struct FetchDataHelper {
       
     //Fetches data from API.
+    
     func fetchData(completion: @escaping (Result<AdministrationResponseDB, Error>) -> Void) {
         let urlString = "https://covid-vaccinatie.be/api/v1/administered.json"
         
@@ -37,3 +38,4 @@ struct RecordDBHelper {
         task.resume()
     }
 }
+

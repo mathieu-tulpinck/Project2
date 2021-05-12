@@ -8,10 +8,10 @@
 import Foundation
 
 struct AdministrationResponseDB: Decodable {
-    let result: [String: [AdministratorRecordDB]]
+    let result: [String: [AdministrationRecordDB]]
 }
 
-struct AdministratorRecordDB: Decodable {
+struct AdministrationRecordDB: Decodable {
     let date: String
     var administrationDate: Date? {
         return DateFormatter().date(from: date)

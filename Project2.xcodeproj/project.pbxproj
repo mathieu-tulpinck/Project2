@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4323BBC0264A805900D599F6 /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBBF264A805900D599F6 /* APIResponse.swift */; };
-		4323BBC3264A81F600D599F6 /* RecordDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBC2264A81F600D599F6 /* RecordDBHelper.swift */; };
-		4323BBC6264ABCC900D599F6 /* NSManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBC5264ABCC900D599F6 /* NSManagedObjectContext.swift */; };
+		4323BBC3264A81F600D599F6 /* FetchDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBC2264A81F600D599F6 /* FetchDataHelper.swift */; };
 		4323BBCD264ADA9800D599F6 /* NSPersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4323BBCC264ADA9800D599F6 /* NSPersistentContainer.swift */; };
 		4323BBCE264AE21600D599F6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066D32646D58400D1AB9E /* SceneDelegate.swift */; };
 		435066D22646D58400D1AB9E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066D12646D58400D1AB9E /* AppDelegate.swift */; };
@@ -20,6 +19,7 @@
 		435066E12646D58B00D1AB9E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 435066DF2646D58B00D1AB9E /* LaunchScreen.storyboard */; };
 		435066EC2646D58C00D1AB9E /* Project2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066EB2646D58C00D1AB9E /* Project2Tests.swift */; };
 		435066F72646D58C00D1AB9E /* Project2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435066F62646D58C00D1AB9E /* Project2UITests.swift */; };
+		43A25CFE264C071C00670084 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A25CFD264C071C00670084 /* PersistenceHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,8 +41,7 @@
 
 /* Begin PBXFileReference section */
 		4323BBBF264A805900D599F6 /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
-		4323BBC2264A81F600D599F6 /* RecordDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDBHelper.swift; sourceTree = "<group>"; };
-		4323BBC5264ABCC900D599F6 /* NSManagedObjectContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectContext.swift; sourceTree = "<group>"; };
+		4323BBC2264A81F600D599F6 /* FetchDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDataHelper.swift; sourceTree = "<group>"; };
 		4323BBCC264ADA9800D599F6 /* NSPersistentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPersistentContainer.swift; sourceTree = "<group>"; };
 		435066CE2646D58400D1AB9E /* Project2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		435066D12646D58400D1AB9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +58,7 @@
 		435066F22646D58C00D1AB9E /* Project2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Project2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		435066F62646D58C00D1AB9E /* Project2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project2UITests.swift; sourceTree = "<group>"; };
 		435066F82646D58C00D1AB9E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		43A25CFD264C071C00670084 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +97,8 @@
 		4323BBC1264A819100D599F6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				4323BBC2264A81F600D599F6 /* RecordDBHelper.swift */,
+				4323BBC2264A81F600D599F6 /* FetchDataHelper.swift */,
+				43A25CFD264C071C00670084 /* PersistenceHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -105,7 +106,6 @@
 		4323BBC4264ABCA700D599F6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				4323BBC5264ABCC900D599F6 /* NSManagedObjectContext.swift */,
 				4323BBCC264ADA9800D599F6 /* NSPersistentContainer.swift */,
 			);
 			path = Extensions;
@@ -134,12 +134,9 @@
 		435066D02646D58400D1AB9E /* Project2 */ = {
 			isa = PBXGroup;
 			children = (
+				43A25CFC264C063400670084 /* InterfaceBuilder */,
+				43A25CFB264C061000670084 /* Resources */,
 				435066E22646D58B00D1AB9E /* Info.plist */,
-				435066D12646D58400D1AB9E /* AppDelegate.swift */,
-				435066D32646D58400D1AB9E /* SceneDelegate.swift */,
-				435066DD2646D58B00D1AB9E /* Assets.xcassets */,
-				435066DF2646D58B00D1AB9E /* LaunchScreen.storyboard */,
-				435066D72646D58400D1AB9E /* Main.storyboard */,
 				435066DA2646D58400D1AB9E /* Project2.xcdatamodeld */,
 				4323BBC4264ABCA700D599F6 /* Extensions */,
 				4323BBC1264A819100D599F6 /* Helpers */,
@@ -170,9 +167,28 @@
 		435067052646D5F700D1AB9E /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				435066D12646D58400D1AB9E /* AppDelegate.swift */,
+				435066D32646D58400D1AB9E /* SceneDelegate.swift */,
 				435066D52646D58400D1AB9E /* MainViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		43A25CFB264C061000670084 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				435066DD2646D58B00D1AB9E /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		43A25CFC264C063400670084 /* InterfaceBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				435066DF2646D58B00D1AB9E /* LaunchScreen.storyboard */,
+				435066D72646D58400D1AB9E /* Main.storyboard */,
+			);
+			path = InterfaceBuilder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -311,8 +327,8 @@
 				435066D22646D58400D1AB9E /* AppDelegate.swift in Sources */,
 				4323BBCD264ADA9800D599F6 /* NSPersistentContainer.swift in Sources */,
 				435066DC2646D58400D1AB9E /* Project2.xcdatamodeld in Sources */,
-				4323BBC3264A81F600D599F6 /* RecordDBHelper.swift in Sources */,
-				4323BBC6264ABCC900D599F6 /* NSManagedObjectContext.swift in Sources */,
+				4323BBC3264A81F600D599F6 /* FetchDataHelper.swift in Sources */,
+				43A25CFE264C071C00670084 /* PersistenceHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

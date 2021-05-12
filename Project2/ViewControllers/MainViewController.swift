@@ -15,63 +15,32 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        let moc = persistentContainer.viewContext
-        moc.perform {
-            let administrationRecord = AdministrationRecord(context: moc)
-            let helper = RecordDBHelper()
-            helper.fetchData { (response) in
-                switch response {
-                    case .success(let data):
-                        guard let recordsArray = data.result["administered"] else { return }
-                        for record in recordsArray {
-                            moc.persist {//there seems to be an issue with persist function
-                                administrationRecord.date = record.administrationDate
-                                administrationRecord.firstDose = record.firstDose
-                                administrationRecord.firstDose = record.secondDose
-                                administrationRecord.region = record.region
-                            }
-                        }
-                    case .failure(let error):
-                        print(error)
-                }
-            }
-
-            do {
-              try moc.save()
-            } catch {
-              moc.rollback()
-            }
-        }
+        let data = getData()
+        saveData(data: data)
+    
     }
     
-//    func saveAdministrationRecords() {
-//        let moc = persistentContainer.viewContext
-//        moc.perform {
-//            let administrationRecord = AdministrationRecord(context: moc)
-//            let helper = RecordDBHelper()
-//            helper.fetchData { (response) in
-//                switch response {
-//                    case .success(let data):
-//                        guard let recordsArray = data.result["administered"] else { return }
-//                        for record in recordsArray {
-//                            moc.persist {
-//                                administrationRecord.date = record.administrationDate
-//                                administrationRecord.firstDose = record.firstDose
-//                                administrationRecord.firstDose = record.secondDose
-//                                administrationRecord.region = record.region
-//                            }
-//                        }
-//                    case .failure(let error):
-//                        print(error)
-//                }
-//            }
-//
-//            do {
-//              try moc.save()
-//            } catch {
-//              moc.rollback()
-//            }
-//        }
-//    }
+    func getData() -> [AdministrationRecordDB] {
+        let helper = FetchDataHelper()
+        var data: [AdministrationRecordDB] = []
+        helper.fetchData { (response) in
+            switch response {
+                case .success(let returnedData):
+                    guard let recordsArray = returnedData.result["administered"] else { return }
+                    data = recordsArray
+                case .failure(let error):
+                    print(error)
+            }
+        }
+        
+        return data
+    }
+    
+    func saveData(data: [AdministrationRecordDB]) {
+        let helper = PersistenceHelper()
+        helper.batchInsertAdministrationRecords(administrationRecords: data)
+    }
 }
+
+
 
