@@ -11,7 +11,8 @@ struct FetchDataHelper {
       
     //Fetches data from API.
     
-    func fetchData(completion: @escaping (Result<AdministrationResponseDB, Error>) -> Void) {
+    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void){
+        
         let urlString = "https://covid-vaccinatie.be/api/v1/administered.json"
         
         guard let recordsURL = URL(string: urlString) else { return }
@@ -29,7 +30,7 @@ struct FetchDataHelper {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             
             do {
-                let records = try decoder.decode(AdministrationResponseDB.self, from: validData)
+                let records = try decoder.decode(AdministrationResponseAPI.self, from: validData)
                 completion(.success(records))
             } catch let serializationError {
                 completion(.failure(serializationError))

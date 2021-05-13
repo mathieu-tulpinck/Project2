@@ -7,15 +7,12 @@
 
 import Foundation
 
-struct AdministrationResponseDB: Decodable {
-    let result: [String: [AdministrationRecordDB]]
+struct AdministrationResponseAPI: Decodable {
+    let result: [String: [AdministrationRecordAPI]]
 }
 
-struct AdministrationRecordDB: Decodable {
+struct AdministrationRecordAPI: Decodable {
     let date: String
-    var administrationDate: Date? {
-        return DateFormatter().date(from: date)
-    }
     let firstDose: Int32
     let secondDose: Int32
     let region: String?
