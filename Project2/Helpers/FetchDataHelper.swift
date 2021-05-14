@@ -36,7 +36,7 @@ struct FetchDataHelper {
                 completion(.failure(serializationError))
             }
         }
-        task.resume()
+        task.resume()r
     }
 }
 
