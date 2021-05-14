@@ -14,16 +14,23 @@ class MainViewController: UIViewController {
     var persistentContainer: NSPersistentContainer!
     var fetchedResultsController: NSFetchedResultsController<AdministrationRecord>?
     
+    let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
+    
+    var stackedBarChart: BarChartView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        stackedBarChart = createChart()
+        view.addSubview(stackedBarChart)
+        stackedBarChart.center = view.center
+        stackedBarChart.setNeedsDisplay()
         
-        getDataAPI()
+        getData()
         
-        createChart()
     }
     
-    func getDataAPI() {
+    func getData() {
         let helper = FetchDataHelper()
         helper.fetchDataAPI { (response) in
             switch response {
@@ -90,11 +97,8 @@ class MainViewController: UIViewController {
         return batchInsert
     }
     
-    /*fetch data from db. should return array of arrays
-     ["region", "first_dose_aggregate", "second_dose_aggregate"]*/
-    
     func getDataDB () {
-        var dosesPerRegion = [Int32]()
+        var dosesPerRegion = [Double]()
         let regions = ["Flanders", "Wallonia", "Brussels", "Ostbelgien"]
         let doseTypes = ["firstDose", "secondDose"]
         for region in regions {
@@ -106,7 +110,7 @@ class MainViewController: UIViewController {
                 }
             }
         
-        func getDataDBPerRegion(_ region: String, _ doseType: String) -> Int32 {
+        func getDataDBPerRegion(_ region: String, _ doseType: String) -> Double {
             let moc = persistentContainer.viewContext
             let keypath = NSExpression(forKeyPath: doseType)
             let expression = NSExpression(forFunction: "sum:", arguments: [keypath])
@@ -127,48 +131,103 @@ class MainViewController: UIViewController {
             do {
                 resultSum = try moc.fetch(request) as? [[String:Any]]
                 
-                if let input = resultSum?[0]["sum"] as? Int32 {
+                if let input = resultSum?[0]["sum"] as? Double {//not tested
                     return input
                 }
-                //dosesPerRegion.append(input)
             } catch {
                 print("fetch request failed")
             }
             
             return 0
         }
+        
+        supplyData(input: dosesPerRegion)
     }
     
-    func createChart() {
+    func createChart() -> BarChartView {
         
-        //create bar chart
-        let groupedBarChart = BarChartView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.width))
+        let stackedBarChart = BarChartView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.width))
         
-        //chart configuration
-        let xAxis = groupedBarChart.xAxis
+        let xAxis = stackedBarChart.xAxis
         xAxis.labelPosition = .bottom
+        let regions = ["Flanders", "Wallonia", "Brussels", "Ostbelgien"]
+        xAxis.valueFormatter = IndexAxisValueFormatter(values: regions)
+        xAxis.granularity = 1
         
-        groupedBarChart.rightAxis.enabled = false
-        let yAxis = groupedBarChart.leftAxis
+        stackedBarChart.rightAxis.enabled = false
         
-        
-        //egend configuration
-        let legend = groupedBarChart.legend
-        
-        //supply data
+        let yAxis = stackedBarChart.leftAxis
+        yAxis.labelPosition = .outsideChart
+        yAxis.axisMinimum = 0
+        yAxis.labelCount = 10
+        yAxis.axisMaximum = 1
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        yAxis.valueFormatter = DefaultAxisValueFormatter(formatter: formatter)
+                
+        return stackedBarChart
+    }
+    
+    func supplyData(input: [Double]) {
+        var yVals = [[Double]]()
         var entries = [BarChartDataEntry]()
         
-        for x in 0..<10 {
-            entries.append(BarChartDataEntry(x: Double(x),
-                                             y: Double.random(in: 0...30)))
+        let percentagesPerRegion = calculatePercentage(input: input)
+        
+        for i in stride(from: 0, to: percentagesPerRegion.endIndex, by: 2) {
+            yVals.append([percentagesPerRegion[i], percentagesPerRegion[i+1]])
         }
-        let set = BarChartDataSet(entries: entries, label: "Cost")
-        let data = BarChartData(dataSet: set)
+        print(yVals)
         
-        groupedBarChart.data = data
+        for i in 0..<4 {
+            let entry = BarChartDataEntry(x: Double(i), yValues: [yVals[i][1], yVals[i][0]])
+            entries.append(entry)
+        }
+        print(entries)
         
-        view.addSubview(groupedBarChart)
-        groupedBarChart.center = view.center
+        let dataSet = BarChartDataSet(entries: entries, label: "")
+        dataSet.colors = [ChartColorTemplates.colorful()[1], ChartColorTemplates.joyful()[4]]
+        dataSet.stackLabels = ["fully vaccinated", "partially vaccinated"]
+        dataSet.drawValuesEnabled = false
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        dataSet.valueFormatter = DefaultValueFormatter(formatter: formatter)
         
+        stackedBarChart.data = BarChartData(dataSet: dataSet)
+        stackedBarChart.fitBars = true
+        stackedBarChart.animate(yAxisDuration: 2.5)
+    }
+    
+    func calculatePercentage(input: [Double]) -> [Double] {
+        var percentagesPerRegion = [Double]()
+        let totalPopulationFlanders = Double(6629143)
+        let totalPopulationWallonia = Double(3645243)
+        let totalPopulationBrussels = Double(1218255)
+        let totalPopulationOstbelgien = Double(77949)
+        
+        var percentageFirstDoseFlanders = (input[0]/totalPopulationFlanders)
+        let percentageSecondDoseFlanders = (input[1]/totalPopulationFlanders)
+        percentageFirstDoseFlanders -= percentageSecondDoseFlanders
+        var percentageFirstDoseWallonia = (input[2]/totalPopulationWallonia)
+        let percentageSecondDoseWallonia = (input[3]/totalPopulationWallonia)
+        percentageFirstDoseWallonia -= percentageSecondDoseWallonia
+        var percentageFirstDoseBrussels = (input[4]/totalPopulationBrussels)
+        let percentageSecondDoseBrussels = (input[5]/totalPopulationBrussels)
+        percentageFirstDoseBrussels -= percentageSecondDoseBrussels
+        var percentageFirstDoseOstbelgien = (input[6]/totalPopulationOstbelgien)
+        let percentageSecondDoseOstbelgien = (input[7]/totalPopulationOstbelgien)
+        percentageFirstDoseOstbelgien -= percentageSecondDoseOstbelgien
+        
+        percentagesPerRegion.append(percentageFirstDoseFlanders)
+        percentagesPerRegion.append(percentageSecondDoseFlanders)
+        percentagesPerRegion.append(percentageFirstDoseWallonia)
+        percentagesPerRegion.append(percentageSecondDoseWallonia)
+        percentagesPerRegion.append(percentageFirstDoseBrussels)
+        percentagesPerRegion.append(percentageSecondDoseBrussels)
+        percentagesPerRegion.append(percentageFirstDoseOstbelgien)
+        percentagesPerRegion.append(percentageSecondDoseOstbelgien)
+        
+        print(percentagesPerRegion)
+        return percentagesPerRegion
     }
 }

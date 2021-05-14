@@ -11,7 +11,7 @@ struct FetchDataHelper {
       
     //Fetches data from API.
     
-    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void){
+    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void) {
         
         let urlString = "https://covid-vaccinatie.be/api/v1/administered.json"
         
@@ -36,7 +36,7 @@ struct FetchDataHelper {
                 completion(.failure(serializationError))
             }
         }
-        task.resume()r
+        task.resume()
     }
 }
 
