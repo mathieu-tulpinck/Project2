@@ -12,7 +12,7 @@ iOS Development - werkstuk 2
 
 * https://github.com/danielgindi/Charts
 
-## Source & inspirations
+## Sources & inspirations
 
 * ALEBICTO Mario Eguiluz , BARKER Chris, WALS Donny, Mastering iOS 14 Programming - Fourth Edition, 2021, Packt: chapters 8-9
 * http://www.cimgf.com/2015/06/25/core-data-and-aggregate-fetches-in-swift/

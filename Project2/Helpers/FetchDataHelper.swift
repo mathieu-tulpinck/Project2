@@ -10,7 +10,7 @@ import Foundation
 struct FetchDataHelper {
       
     //Handles retrieval of the JSON data from the API.
-    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void) {//The function provides a closure which is called when the API call is completed. The closure parameter  means that it will either be AdministrationResponseAPI instance or an Error instance.
+    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void) {//The function provides a closure which is called when the API call is completed. The closure parameter  means that it will either be AdministrationResponseAPI instance or an Error instance. Implementation recommended in Pluralsight tutorial.
         
         let urlString = "https://covid-vaccinatie.be/api/v1/administered.json"
         
