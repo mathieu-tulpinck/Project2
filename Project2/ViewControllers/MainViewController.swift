@@ -17,26 +17,37 @@ class MainViewController: UIViewController {
     let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
     
     var stackedBarChart: BarChartView!
+    //var label: UILabel!
+    
+    @IBOutlet weak var label: UILabel!
+    @IBAction func getData(_ sender: UIBarButtonItem) {
+        getData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        //label = UILabel(frame: CGRect(x: 16, y: 30, width: 200, height: 21))
+        label.font = UIFont.systemFont(ofSize: 10)
+        
         stackedBarChart = createChart()
         view.addSubview(stackedBarChart)
         stackedBarChart.center = view.center
-        stackedBarChart.setNeedsDisplay()
         
         getData()
-        
     }
     
+    //Function retrieves JSON data from API and stores it in Core Data.
     func getData() {
         let helper = FetchDataHelper()
         helper.fetchDataAPI { (response) in
             switch response {
             case .success(let returnedData):
-                guard let recordsArray = returnedData.result["administered"] else { return }
-                self.saveDataDB(data: recordsArray)
+                guard let recordsArray = returnedData.result["administered"] else { return }//AdministrationResponseAPI, a Dictionary, gets accessed to retrieve the array of AdministrationRecordAPI instances.
+                if let dateStamp = recordsArray.last?.date {//Timestamp of last administration record added to the dataset is passed on to be visualised in the UI.
+                    self.supplyData(input: dateStamp)
+                }
+                self.saveDataDB(data: recordsArray)//Administration records are passed on to be stored in persistence layer.
             case .failure(let error):
                 print(error)
             }
@@ -60,9 +71,10 @@ class MainViewController: UIViewController {
         }
     }
     
+    //Inserts the administration records in batch into Core Data.
     func batchInsertAdministrationRecords(administrationRecords: [AdministrationRecordAPI]) {
         guard !administrationRecords.isEmpty else { return }
-        persistentContainer.performBackgroundTask({ (moc) in
+        persistentContainer.performBackgroundTask({ (moc) in//PerformBackgroundTask called on the persistence container to perform the batch insert on separate thread.
             let batchInsert = self.batchInsertRequest(administrationRecords: administrationRecords)
             do {
                 let batchInsertResult = try moc.execute(batchInsert) as? NSBatchInsertResult
@@ -75,16 +87,17 @@ class MainViewController: UIViewController {
         })
     }
     
+    //Preparation of batch insert request.
     func batchInsertRequest(administrationRecords: [AdministrationRecordAPI]) -> NSBatchInsertRequest {
         var index = 0
         let total = administrationRecords.count
         
-        let batchInsert = NSBatchInsertRequest(entity: AdministrationRecord.entity()) { (managedObject: NSManagedObject) -> Bool in
+        let batchInsert = NSBatchInsertRequest(entity: AdministrationRecord.entity()) { (managedObject: NSManagedObject) -> Bool in//Creates batch-insertion request for AdministrationRecord managed entity and specifies closure that inserts data into the entity.
             
             guard index < total else { return true }
             
             if let record = managedObject as? AdministrationRecord {
-                let data = administrationRecords[index]
+                let data = administrationRecords[index]//Maps attributes of AdministrationRecordRecordAPI instances to managed AdministrationRecord instances.
                 record.date = data.date
                 record.firstDose = data.firstDose
                 record.secondDose = data.secondDose
@@ -97,6 +110,7 @@ class MainViewController: UIViewController {
         return batchInsert
     }
     
+    //Fetches the administration records from Core Data for visualisation. The data retrieved is an aggregation of first and second dose administrations per region stored as an array of Double.
     func getDataDB () {
         var dosesPerRegion = [Double]()
         let regions = ["Flanders", "Wallonia", "Brussels", "Ostbelgien"]
@@ -110,12 +124,13 @@ class MainViewController: UIViewController {
                 }
             }
         
+        //Fetches the data per region using an aggregate NSExpressionDescription object and a predicate.
         func getDataDBPerRegion(_ region: String, _ doseType: String) -> Double {
             let moc = persistentContainer.viewContext
             let keypath = NSExpression(forKeyPath: doseType)
             let expression = NSExpression(forFunction: "sum:", arguments: [keypath])
 
-            let sumDesc = NSExpressionDescription()
+            let sumDesc = NSExpressionDescription()//Allows to specify a virtual aggregation column to be returned from the
             sumDesc.expression = expression
             sumDesc.name = "sum"
             sumDesc.expressionResultType = .integer32AttributeType
@@ -130,8 +145,7 @@ class MainViewController: UIViewController {
             
             do {
                 resultSum = try moc.fetch(request) as? [[String:Any]]
-                
-                if let input = resultSum?[0]["sum"] as? Double {//not tested
+                if let input = resultSum?[0]["sum"] as? Double {
                     return input
                 }
             } catch {
@@ -144,6 +158,7 @@ class MainViewController: UIViewController {
         supplyData(input: dosesPerRegion)
     }
     
+    //Prepares the stacked bar chart with default values.
     func createChart() -> BarChartView {
         
         let stackedBarChart = BarChartView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.width))
@@ -164,27 +179,41 @@ class MainViewController: UIViewController {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
         yAxis.valueFormatter = DefaultAxisValueFormatter(formatter: formatter)
-                
+        
+        var defaultEntries = [BarChartDataEntry]()
+        for i in 0..<4 {
+            let entry = BarChartDataEntry(x: Double(i), yValues: [0.0, 0.0])
+            defaultEntries.append(entry)
+        }
+        
+        let defaultDataSet = BarChartDataSet(entries: defaultEntries, label: "")
+        defaultDataSet.stackLabels = ["fully vaccinated", "partially vaccinated"]
+        defaultDataSet.drawValuesEnabled = false
+        defaultDataSet.valueFormatter = DefaultValueFormatter(formatter: formatter)
+        
+        stackedBarChart.data = BarChartData(dataSet: defaultDataSet)
+        stackedBarChart.fitBars = true
+        
         return stackedBarChart
     }
     
+    //Updates the chart with the data retrieved from Core Data.
     func supplyData(input: [Double]) {
         var yVals = [[Double]]()
         var entries = [BarChartDataEntry]()
         
-        let percentagesPerRegion = calculatePercentage(input: input)
+        let helper = ComputationHelper()
+        let percentagesPerRegion = helper.calculatePercentage(input: input)
         
         for i in stride(from: 0, to: percentagesPerRegion.endIndex, by: 2) {
             yVals.append([percentagesPerRegion[i], percentagesPerRegion[i+1]])
         }
-        print(yVals)
-        
+                
         for i in 0..<4 {
             let entry = BarChartDataEntry(x: Double(i), yValues: [yVals[i][1], yVals[i][0]])
             entries.append(entry)
         }
-        print(entries)
-        
+                
         let dataSet = BarChartDataSet(entries: entries, label: "")
         dataSet.colors = [ChartColorTemplates.colorful()[1], ChartColorTemplates.joyful()[4]]
         dataSet.stackLabels = ["fully vaccinated", "partially vaccinated"]
@@ -193,41 +222,16 @@ class MainViewController: UIViewController {
         formatter.numberStyle = .percent
         dataSet.valueFormatter = DefaultValueFormatter(formatter: formatter)
         
-        stackedBarChart.data = BarChartData(dataSet: dataSet)
-        stackedBarChart.fitBars = true
-        stackedBarChart.animate(yAxisDuration: 2.5)
+        DispatchQueue.main.async {
+            self.stackedBarChart.data = BarChartData(dataSet: dataSet)
+            self.stackedBarChart.fitBars = true
+            self.stackedBarChart.animate(yAxisDuration: 2.5)            
+        }
     }
     
-    func calculatePercentage(input: [Double]) -> [Double] {
-        var percentagesPerRegion = [Double]()
-        let totalPopulationFlanders = Double(6629143)
-        let totalPopulationWallonia = Double(3645243)
-        let totalPopulationBrussels = Double(1218255)
-        let totalPopulationOstbelgien = Double(77949)
-        
-        var percentageFirstDoseFlanders = (input[0]/totalPopulationFlanders)
-        let percentageSecondDoseFlanders = (input[1]/totalPopulationFlanders)
-        percentageFirstDoseFlanders -= percentageSecondDoseFlanders
-        var percentageFirstDoseWallonia = (input[2]/totalPopulationWallonia)
-        let percentageSecondDoseWallonia = (input[3]/totalPopulationWallonia)
-        percentageFirstDoseWallonia -= percentageSecondDoseWallonia
-        var percentageFirstDoseBrussels = (input[4]/totalPopulationBrussels)
-        let percentageSecondDoseBrussels = (input[5]/totalPopulationBrussels)
-        percentageFirstDoseBrussels -= percentageSecondDoseBrussels
-        var percentageFirstDoseOstbelgien = (input[6]/totalPopulationOstbelgien)
-        let percentageSecondDoseOstbelgien = (input[7]/totalPopulationOstbelgien)
-        percentageFirstDoseOstbelgien -= percentageSecondDoseOstbelgien
-        
-        percentagesPerRegion.append(percentageFirstDoseFlanders)
-        percentagesPerRegion.append(percentageSecondDoseFlanders)
-        percentagesPerRegion.append(percentageFirstDoseWallonia)
-        percentagesPerRegion.append(percentageSecondDoseWallonia)
-        percentagesPerRegion.append(percentageFirstDoseBrussels)
-        percentagesPerRegion.append(percentageSecondDoseBrussels)
-        percentagesPerRegion.append(percentageFirstDoseOstbelgien)
-        percentagesPerRegion.append(percentageSecondDoseOstbelgien)
-        
-        print(percentagesPerRegion)
-        return percentagesPerRegion
+    func supplyData (input: String) {
+        DispatchQueue.main.async {
+            self.label.text = "data last updated: \(input)"
+        }
     }
 }

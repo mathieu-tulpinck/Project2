@@ -9,7 +9,9 @@ import Foundation
 import CoreData
 
 extension NSPersistentContainer {
-  func saveContextIfNeeded() {
+  
+    //Implementation recommended in ALEBICTO Mario Eguiluz , BARKER Chris, WALS Donny, Mastering iOS 14 Programming - Fourth Edition, 2021, Packt: chapters 8-9.
+    func saveContextIfNeeded() {
     if viewContext.hasChanges {
       do {
         try viewContext.save()

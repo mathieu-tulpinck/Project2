@@ -9,9 +9,8 @@ import Foundation
 
 struct FetchDataHelper {
       
-    //Fetches data from API.
-    
-    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void) {
+    //Handles retrieval of the JSON data from the API.
+    func fetchDataAPI(completion: @escaping (Result<AdministrationResponseAPI, Error>) -> Void) {//The function provides a closure which is called when the API call is completed. The closure parameter  means that it will either be AdministrationResponseAPI instance or an Error instance.
         
         let urlString = "https://covid-vaccinatie.be/api/v1/administered.json"
         
@@ -30,10 +29,10 @@ struct FetchDataHelper {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             
             do {
-                let records = try decoder.decode(AdministrationResponseAPI.self, from: validData)
-                completion(.success(records))
+                let records = try decoder.decode(AdministrationResponseAPI.self, from: validData)//Data returned from API call gets parsed to an AdministrationResponseAPI instance.
+                completion(.success(records))//Completion closure called if the API call is succesful.
             } catch let serializationError {
-                completion(.failure(serializationError))
+                completion(.failure(serializationError))//Completion closure called if the API call results in an error.
             }
         }
         task.resume()
